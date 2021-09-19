@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DigitalScan</string>
+    <string name="fab_scan_button">Fab Scan</string>
 </resources>

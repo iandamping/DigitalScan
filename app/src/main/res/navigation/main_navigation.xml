@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/fragmentHome">
+
+    <fragment
+        android:id="@+id/fragmentHome"
+        android:name="com.junemon.digitalscan.feature.FragmentHome"
+        android:label="FragmentHome" >
+        <action
+            android:id="@+id/action_fragmentHome_to_fragmentQrScan"
+            app:destination="@id/fragmentQrScan" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentQrScan"
+        android:name="com.junemon.digitalscan.feature.FragmentQrScan"
+        android:label="FragmentQrScan" />
+</navigation>
