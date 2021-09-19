@@ -9,6 +9,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 /**
  * Created by Ian Damping on 28,May,2021
@@ -16,14 +18,14 @@ import dagger.hilt.android.scopes.ActivityScoped
  * Indonesia.
  */
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 interface CameraxListenerModule {
 
     @Binds
-    @ActivityScoped
+    @Singleton
     fun bindScanListener(scanListener: ScanListenerImpl): ScanListener
 
     @Binds
-    @ActivityScoped
+    @Singleton
     fun bindScanAnalyzer(scanAnalyzer: ScanAnalyzerImpl): ScanAnalyzer
 }

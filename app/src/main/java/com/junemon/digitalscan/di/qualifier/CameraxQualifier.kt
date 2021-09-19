@@ -15,15 +15,4 @@ annotation class LensFacingBack
 @Qualifier
 annotation class LensFacingFront
 
-@Retention(AnnotationRetention.BINARY)
-@Qualifier
-annotation class CameraxOutputDirectory
-
-@Retention(AnnotationRetention.BINARY)
-@Qualifier
-annotation class CameraxPhotoFile
-
-@Retention(AnnotationRetention.BINARY)
-@Qualifier
-annotation class CameraxOutputOptions
 

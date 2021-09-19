@@ -26,6 +26,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.junemon.digitalscan.core.presentation.afterMeasured
 import com.junemon.digitalscan.core.presentation.analyzer.ScanAnalyzer
 import com.junemon.digitalscan.di.qualifier.LensFacingBack
+import com.junemon.digitalscan.di.qualifier.LensFacingFront
 import timber.log.Timber
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -46,30 +47,31 @@ class CameraxHelperImpl @Inject constructor(
     private val cameraFuture: ListenableFuture<ProcessCameraProvider>,
     private val cameraProcessProvider: ProcessCameraProvider,
     @LensFacingBack private val backCameraSelector: CameraSelector,
+    @LensFacingFront private val frontCameraSelector: CameraSelector,
     private val imageAnalyzer: ScanAnalyzer,
 ) : CameraxHelper {
 
     override fun startCameraForScan(
         lifecycleOwner: LifecycleOwner,
+        cameraSelector: CameraSelector,
         preview: Preview,
         camera: (Camera) -> Unit
     ) {
-
-        cameraFuture.addListener({
-            try {
-                // Unbind use cases before rebinding
-                unbindCamera()
-                // Bind use cases to camera
-                camera(
-                    cameraProcessProvider.bindToLifecycle(
-                        lifecycleOwner, backCameraSelector, preview, provideImageAnalysis()
+            cameraFuture.addListener({
+                try {
+                    // Unbind use cases before rebinding
+                    unbindCamera()
+                    // Bind use cases to camera
+                    camera(
+                        cameraProcessProvider.bindToLifecycle(
+                            lifecycleOwner, cameraSelector, preview, provideImageAnalysis()
+                        )
                     )
-                )
-            } catch (exc: Exception) {
-                Timber.e("Use case binding failed : $exc")
-            }
+                } catch (exc: Exception) {
+                    Timber.e("Use case binding failed : $exc")
+                }
 
-        }, cameraMainExecutor)
+            }, cameraMainExecutor)
     }
 
     override fun providePreview(view: PreviewView, aspectRatio: Int): Preview {
@@ -174,6 +176,22 @@ class CameraxHelperImpl @Inject constructor(
             }
     }
 
+    override fun provideLensFacingFrontState(): Int {
+        return CameraSelector.LENS_FACING_FRONT
+    }
+
+    override fun provideLensFacingBackState(): Int {
+        return CameraSelector.LENS_FACING_BACK
+    }
+
+    override fun provideFrontCameraSelector(): CameraSelector {
+       return frontCameraSelector
+    }
+
+    override fun provideBackCameraSelector(): CameraSelector {
+        return backCameraSelector
+    }
+
     override fun autoFocusPreview(view: PreviewView, camera: Camera) {
         view.afterMeasured {
             val autoFocusPoint = SurfaceOrientedMeteringPointFactory(1f, 1f)
@@ -225,6 +243,14 @@ class CameraxHelperImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun hasBackCamera(): Boolean {
+        return cameraProcessProvider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)
+    }
+
+    override fun hasFrontCamera(): Boolean {
+        return cameraProcessProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
     }
 
     override fun providePreview(view: PreviewView): Preview {

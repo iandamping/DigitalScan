@@ -2,6 +2,7 @@ package com.junemon.digitalscan.core.presentation.helper
 
 import android.view.SurfaceHolder
 import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.view.PreviewView
@@ -14,7 +15,7 @@ import androidx.lifecycle.LifecycleOwner
  */
 interface CameraxHelper {
 
-    fun startCameraForScan(lifecycleOwner: LifecycleOwner,preview: Preview, camera: (Camera)->Unit)
+    fun startCameraForScan(lifecycleOwner: LifecycleOwner,cameraSelector:CameraSelector,preview: Preview, camera: (Camera)->Unit)
 
     fun providePreview(view: PreviewView): Preview
 
@@ -32,9 +33,21 @@ interface CameraxHelper {
 
     fun provideImageAnalysis(): ImageAnalysis
 
+    fun provideLensFacingFrontState():Int
+
+    fun provideLensFacingBackState():Int
+
+    fun provideFrontCameraSelector():CameraSelector
+
+    fun provideBackCameraSelector():CameraSelector
+
     fun autoFocusPreview(view: PreviewView,camera: Camera)
 
     fun tapToFocusPreview(view: PreviewView,camera: Camera)
+
+    fun hasBackCamera(): Boolean
+
+    fun hasFrontCamera(): Boolean
 
     fun unbindCamera()
 

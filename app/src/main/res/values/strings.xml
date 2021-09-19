@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DigitalScan</string>
     <string name="fab_scan_button">Fab Scan</string>
+    <string name="switch_camera_button_alt">switch camera</string>
 </resources>

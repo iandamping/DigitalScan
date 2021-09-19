@@ -10,8 +10,8 @@ import com.junemon.digitalscan.di.qualifier.LensFacingFront
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -22,18 +22,18 @@ import java.util.concurrent.Executors
  * Indonesia.
  */
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 object CameraxConstructorModule {
 
     @Provides
     fun provideCameraXExecutor(): ExecutorService = Executors.newSingleThreadExecutor()
 
     @Provides
-    fun provideCameraMainExecutor(@ActivityContext context: Context): Executor =
+    fun provideCameraMainExecutor(@ApplicationContext context: Context): Executor =
         ContextCompat.getMainExecutor(context)
 
     @Provides
-    fun provideProcessCameraProviderFuture(@ActivityContext context: Context): ListenableFuture<ProcessCameraProvider> =
+    fun provideProcessCameraProviderFuture(@ApplicationContext context: Context): ListenableFuture<ProcessCameraProvider> =
         ProcessCameraProvider.getInstance(context)
 
     @Provides
@@ -42,9 +42,11 @@ object CameraxConstructorModule {
 
     @Provides
     @LensFacingBack
-    fun provideBackCameraSelector(): CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    fun provideBackCameraSelector(): CameraSelector =
+        CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
 
     @Provides
     @LensFacingFront
-    fun provideFrontCameraSelector(): CameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+    fun provideFrontCameraSelector(): CameraSelector =
+        CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
 }
